@@ -19,7 +19,9 @@ jobs:
           terraform_version: 1.13.0
 
       - name: Set OCI key
-        run: echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./oci_api_key.pem
+        run: |
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./keys/oci_api_key.pem
+          chmod 600 ./keys/oci_api_key.pem
           
       - name: Terraform Init & Plan
         run: |
