@@ -21,16 +21,19 @@ jobs:
       - name: Set OCI key
         run: echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./oci_api_key.pem
           
-      - name: Terraform Init & plan
-        env:
-          TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
-          TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
-          TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_region: ${{ secrets.OCI_REGION }}
-          TF_VAR_private_key_path: ./keys/oci_api_key.pem
+      - name: Terraform Init & Plan
         run: |
+          export TF_VAR_tenancy_ocid="${{ secrets.OCI_TENANCY_OCID }}"
+          export TF_VAR_user_ocid="${{ secrets.OCI_USER_OCID }}"
+          export TF_VAR_fingerprint="${{ secrets.OCI_FINGERPRINT }}"
+          export TF_VAR_region="${{ secrets.OCI_REGION }}"
+          export TF_VAR_private_key_path="./keys/oci_api_key.pem"
+
           terraform init
+
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Branch detected: $BRANCH_NAME"
+
           if [ "$BRANCH_NAME" = "dev" ]; then
             VAR_FILE="envs/dev/dev.tfvars"
           elif [ "$BRANCH_NAME" = "staging" ]; then
@@ -38,7 +41,9 @@ jobs:
           else
             VAR_FILE="envs/prod/prod.tfvars"
           fi
+
           terraform plan -var-file="$VAR_FILE"
+
 
       - name: Remove OCI key
         run: rm -f ./oci_api_key.pem
