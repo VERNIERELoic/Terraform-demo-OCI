@@ -10,6 +10,6 @@ export TF_VAR_tenancy_ocid=
 export TF_VAR_user_ocid=
 
 terraform init
-terraform plan
-terraform apply
+terraform plan -var-file="envs/dev/dev.tfvars"
+terraform apply -var-file="envs/dev/dev.tfvars"
 ```
