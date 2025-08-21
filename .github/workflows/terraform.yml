@@ -30,11 +30,15 @@ jobs:
           TF_VAR_private_key_path: ./keys/oci_api_key.pem
         run: |
           terraform init
-          if ["${GITHUB_REF#refs/heads/}" = "dev" ]; then
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          if [ "$BRANCH_NAME" = "dev" ]; then
             VAR_FILE="envs/dev/dev.tfvars"
-          elif ["${GITHUB_REF#refs/heads/}" = "staging" ]; then
+          elif [ "$BRANCH_NAME" = "staging" ]; then
             VAR_FILE="envs/staging/staging.tfvars"
           else
             VAR_FILE="envs/prod/prod.tfvars"
           fi
-          terraform plan -var-file=${VAR_FILE}
+          terraform plan -var-file="$VAR_FILE"
+
+      - name: Remove OCI key
+        run: rm -f ./oci_api_key.pem
