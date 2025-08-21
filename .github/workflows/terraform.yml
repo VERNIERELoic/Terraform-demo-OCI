@@ -45,8 +45,11 @@ jobs:
             VAR_FILE="envs/prod/prod.tfvars"
           fi
 
-          terraform plan -var-file="$VAR_FILE"
+          echo "VAR_FILE=$VAR_FILE" >> $GITHUB_ENV
+          terraform plan -var-file="$VAR_FILE" -out=tfplan
 
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
 
       - name: Remove OCI key
         run: rm -f ./oci_api_key.pem
