@@ -46,10 +46,11 @@ jobs:
           fi
 
           echo "VAR_FILE=$VAR_FILE" >> $GITHUB_ENV
-          terraform plan -var-file="$VAR_FILE" -out=tfplan
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+          terraform plan -var-file="$VAR_FILE" -out=tfplan -detailed-exitcode 
+          if [ $? -eq 2 ]; then
+            terraform apply -auto-approve tfplan
+          else
+            exit 1
 
       - name: Remove OCI key
         run: rm -f ./oci_api_key.pem
