@@ -30,9 +30,9 @@ jobs:
           TF_VAR_private_key_path: ./keys/oci_api_key.pem
         run: |
           terraform init
-          if ["${GITHUB_REF}" = "dev" ]; then
+          if ["${GITHUB_REF#refs/heads/}" = "dev" ]; then
             VAR_FILE="envs/dev/dev.tfvars"
-          elif ["${GITHUB_REF}" = "staging" ]; then
+          elif ["${GITHUB_REF#refs/heads/}" = "staging" ]; then
             VAR_FILE="envs/staging/staging.tfvars"
           else
             VAR_FILE="envs/prod/prod.tfvars"
