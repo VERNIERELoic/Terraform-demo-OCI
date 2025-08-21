@@ -14,3 +14,12 @@ module "subnet" {
   dns_label      = var.subnet_dns_label
   vcn_id         = module.vcn.vcn_id
 }
+
+module "instance" {
+  source         = "./modules/instance"
+  compartment_id = var.compartment_id
+  subnet_id      = module.subnet.subnet_id
+  k3s_masters    = var.k3s_masters
+  k3s_workers    = var.k3s_workers
+}
+

@@ -1,17 +1,10 @@
-variable "compartment_id" {}
-
-variable "vcn_cidr_block" {}
-variable "vcn_display_name" {}
-variable "vcn_dns_label" {}
-
-variable "subnet_cidr_block" {}
-variable "subnet_display_name" {}
-variable "subnet_dns_label" {}
-
-
+variable "compartment_id" {
+  description = "OCID of the compartment where the instance will be created"
+  type        = string
+}
 
 variable "k3s_masters" {
-  description = "Configuration des instances master K3s"
+  description = "Configuration of the K3s masters instances"
   type = object({
     instance_number                  = number
     instance_shape                   = string
@@ -23,7 +16,7 @@ variable "k3s_masters" {
 }
 
 variable "k3s_workers" {
-  description = "Configuration des instances worker K3s"
+  description = "Configuration of the K3s workers instances"
   type = object({
     instance_number                  = number
     instance_shape                   = string
