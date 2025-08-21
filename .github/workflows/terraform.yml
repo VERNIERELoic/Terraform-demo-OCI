@@ -19,22 +19,35 @@ jobs:
           terraform_version: 1.13.0
 
       - name: Set OCI key
-        run: echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./oci_api_key.pem
-          
-      - name: Terraform Init & plan
-        env:
-          TF_VAR_tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
-          TF_VAR_user_ocid: ${{ secrets.OCI_USER_OCID }}
-          TF_VAR_fingerprint: ${{ secrets.OCI_FINGERPRINT }}
-          TF_VAR_region: ${{ secrets.OCI_REGION }}
-          TF_VAR_private_key_path: ./keys/oci_api_key.pem
         run: |
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./oci_api_key.pem
+          chmod 600 ./oci_api_key.pem
+          
+      - name: Terraform Init & Plan
+        run: |
+          export TF_VAR_tenancy_ocid="${{ secrets.TF_VAR_TENANCY_OCID }}"
+          export TF_VAR_user_ocid="${{ secrets.TF_VAR_USER_OCID }}"
+          export TF_VAR_fingerprint="${{ secrets.TF_VAR_FINGERPRINT }}"
+          export TF_VAR_region="${{ secrets.TF_VAR_REGION }}"
+          export TF_VAR_private_key_path="./oci_api_key.pem"
+          source ~/.bash_profile
+
           terraform init
-          if ["${GITHUB_REF#refs/heads/}" = "dev" ]; then
+
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Branch detected: $BRANCH_NAME"
+
+          if [ "$BRANCH_NAME" = "dev" ]; then
             VAR_FILE="envs/dev/dev.tfvars"
-          elif ["${GITHUB_REF#refs/heads/}" = "staging" ]; then
+          elif [ "$BRANCH_NAME" = "staging" ]; then
             VAR_FILE="envs/staging/staging.tfvars"
           else
             VAR_FILE="envs/prod/prod.tfvars"
           fi
-          terraform plan -var-file=${VAR_FILE}
+
+          echo "VAR_FILE=$VAR_FILE" >> $GITHUB_ENV
+          terraform plan -var-file="$VAR_FILE"
+          # terraform apply -auto-approve
+
+      - name: Remove OCI key
+        run: rm -f ./oci_api_key.pem
