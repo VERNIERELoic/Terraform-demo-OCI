@@ -20,10 +20,8 @@ jobs:
 
       - name: Set OCI key
         run: |
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./keys/oci_api_key.pem
-          ls -l 
-          ls -l ./keys
-          chmod 600 ./keys/oci_api_key.pem
+          echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./oci_api_key.pem
+          chmod 600 ./oci_api_key.pem
           
       - name: Terraform Init & Plan
         run: |
@@ -31,7 +29,7 @@ jobs:
           export TF_VAR_user_ocid="${{ secrets.TF_VAR_USER_OCID }}"
           export TF_VAR_fingerprint="${{ secrets.TF_VAR_FINGERPRINT }}"
           export TF_VAR_region="${{ secrets.TF_VAR_REGION }}"
-          export TF_VAR_private_key_path="./keys/oci_api_key.pem"
+          export TF_VAR_private_key_path="./oci_api_key.pem"
           source ~/.bash_profile
 
           terraform init
