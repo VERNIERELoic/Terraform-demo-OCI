@@ -1,12 +1,37 @@
-variable "compartment_id" {}
+variable "compartment_id" {
+  description = "OCID of the compartment"
+  type        = string
+}
 
-variable "vcn_cidr_block" {}
-variable "vcn_display_name" {}
-variable "vcn_dns_label" {}
+variable "vcn_cidr_block" {
+  description = "CIDR block for the VCN"
+  type        = string
+}
 
-variable "subnet_cidr_block" {}
-variable "subnet_display_name" {}
-variable "subnet_dns_label" {}
+variable "vcn_display_name" {
+  description = "Display name for the VCN"
+  type        = string
+}
+
+variable "vcn_dns_label" {
+  description = "DNS label for the VCN"
+  type        = string
+}
+
+variable "subnet_cidr_block" {
+  description = "CIDR block for the subnet"
+  type        = string
+}
+
+variable "subnet_display_name" {
+  description = "Display name for the subnet"
+  type        = string
+}
+
+variable "subnet_dns_label" {
+  description = "DNS label for the subnet"
+  type        = string
+}
 
 
 

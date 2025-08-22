@@ -1,16 +1,16 @@
-terraform {
-  backend "s3" {
-    namespace         = "dev"
-    bucket            = "bucket-terraform"
-    region            = "eu-marseille-1"
-    compartment_ocid  = var.compartment_id
-    tenancy_ocid      = var.tenancy_ocid
-    user_ocid         = var.user_ocid
-    fingerprint       = var.fingerprint
-    private_key_path  = "./keys/private_key_loicverniere.pem"
-    key               = "dev/terraform.tfstate"
-  }
-}
+# terraform {
+#   backend "s3" {
+#     namespace         = "dev"
+#     bucket            = "bucket-terraform"
+#     region            = "eu-marseille-1"
+#     compartment_ocid  = var.compartment_id
+#     tenancy_ocid      = var.tenancy_ocid
+#     user_ocid         = var.user_ocid
+#     fingerprint       = var.fingerprint
+#     private_key_path  = "./keys/private_key_loicverniere.pem"
+#     key               = "dev/terraform.tfstate"
+#   }
+# }
 
 module "vcn" {
   source         = "./modules/vcn"
