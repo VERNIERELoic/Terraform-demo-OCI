@@ -10,7 +10,6 @@ terraform {
     # Required
     bucket    = "bucket-terraform"
     namespace = "axfyk0rflhbx"
-    region    = "eu-marseille-1"
   }
 }
 

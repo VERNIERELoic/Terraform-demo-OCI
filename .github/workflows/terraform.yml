@@ -31,9 +31,9 @@ jobs:
           TF_VAR_fingerprint: ${{ secrets.TF_VAR_FINGERPRINT }}
           TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
           TF_VAR_private_key_path: ./oci_api_key.pem
-          
+
         run: |
-          terraform init -input=false
+          terraform init -reconfigure
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
 
           case "$BRANCH_NAME" in
@@ -52,7 +52,7 @@ jobs:
           esac
 
           terraform workspace select "$WORKSPACE" || terraform workspace new "$WORKSPACE"
-          terraform plan -var-file="$VAR_FILE" -out=tfplan
+          terraform plan -var-file="$VAR_FILE"
 
       - name: Clean up OCI key
         run: rm -f ./oci_api_key.pem
