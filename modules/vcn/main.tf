@@ -1,4 +1,4 @@
-resource "oci_core_vcn" "dev-vcn" {
+resource "oci_core_vcn" "vcn" {
   #Required
   compartment_id = var.compartment_id
   cidr_block     = var.cidr_block

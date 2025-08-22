@@ -1,4 +1,4 @@
-resource "oci_core_subnet" "subnet-dev" {
+resource "oci_core_subnet" "subnet" {
   #Required
   cidr_block     = var.cidr_block
   compartment_id = var.compartment_id
