@@ -3,8 +3,15 @@ Simple demo deployment on oracle cloud provider
 
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white) ![OCI Cloud](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=black) 
 
+# Project scope:
+- Basics cloud deployment such as vpc , subnet and compute 
+- Managing multiple envs (dev, stg, prod)
+- Workspaces
+- Backend S3 
+
+
 ```bash
-# .env
+# .env, to run 1st
 export TF_VAR_fingerprint=
 export TF_VAR_private_key_path=
 export TF_VAR_region=
@@ -15,3 +22,7 @@ terraform init
 terraform plan -var-file="envs/dev/dev.tfvars"
 terraform apply -var-file="envs/dev/dev.tfvars"
 ```
+
+## Backend
+State file are now stored and organized per env in the bucket
+![Terraform](medias/backend-oci.png)

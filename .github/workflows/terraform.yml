@@ -35,17 +35,24 @@ jobs:
           terraform init
 
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          echo "Branch detected: $BRANCH_NAME"
+  
+          case "$BRANCH_NAME" in
+            dev)
+              VAR_FILE="envs/dev/dev.tfvars"
+              WORKSPACE="dev"
+              ;;
+            staging)
+              VAR_FILE="envs/staging/staging.tfvars"
+              WORKSPACE="staging"
+              ;;
+            *)
+              VAR_FILE="envs/prod/prod.tfvars"
+              WORKSPACE="prod"
+              ;;
+          esac
 
-          if [ "$BRANCH_NAME" = "dev" ]; then
-            VAR_FILE="envs/dev/dev.tfvars"
-          elif [ "$BRANCH_NAME" = "staging" ]; then
-            VAR_FILE="envs/staging/staging.tfvars"
-          else
-            VAR_FILE="envs/prod/prod.tfvars"
-          fi
+          terraform workspace select "$WORKSPACE" || terraform workspace new "$WORKSPACE"
 
-          echo "VAR_FILE=$VAR_FILE" >> $GITHUB_ENV
           terraform plan -var-file="$VAR_FILE"
           # terraform apply -auto-approve
 
