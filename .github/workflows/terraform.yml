@@ -31,10 +31,11 @@ jobs:
           TF_VAR_fingerprint: ${{ secrets.TF_VAR_FINGERPRINT }}
           TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
           TF_VAR_private_key_path: ./oci_api_key.pem
-          OCI_REGION: ${{ secrets.TF_VAR_REGION }}
+          
         run: |
           terraform init -input=false
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+
           case "$BRANCH_NAME" in
             dev)
               VAR_FILE="envs/dev/dev.tfvars"
