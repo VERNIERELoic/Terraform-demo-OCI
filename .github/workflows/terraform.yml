@@ -1,10 +1,11 @@
-name: Terraform plan
+name: Terraform plan & apply
 
 on:
   push:
     branches:
       - main
       - dev
+      - staging
 
 jobs:
   terraform:
@@ -22,21 +23,18 @@ jobs:
         run: |
           echo "${{ secrets.OCI_PRIVATE_KEY }}" > ./oci_api_key.pem
           chmod 600 ./oci_api_key.pem
-          
+
       - name: Terraform Init & Plan
+        env:
+          TF_VAR_tenancy_ocid: ${{ secrets.TF_VAR_TENANCY_OCID }}
+          TF_VAR_user_ocid: ${{ secrets.TF_VAR_USER_OCID }}
+          TF_VAR_fingerprint: ${{ secrets.TF_VAR_FINGERPRINT }}
+          TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+          TF_VAR_private_key_path: ./oci_api_key.pem
+          OCI_REGION: ${{ secrets.TF_VAR_REGION }}
         run: |
-          export TF_VAR_tenancy_ocid="${{ secrets.TF_VAR_TENANCY_OCID }}"
-          export TF_VAR_user_ocid="${{ secrets.TF_VAR_USER_OCID }}"
-          export TF_VAR_fingerprint="${{ secrets.TF_VAR_FINGERPRINT }}"
-          export TF_VAR_region="${{ secrets.TF_VAR_REGION }}"
-          export OCI_REGION="${{ secrets.TF_VAR_REGION }}"
-          export TF_VAR_private_key_path="./oci_api_key.pem"
-          source ~/.bash_profile
-
-          terraform init
-
+          terraform init -input=false
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-  
           case "$BRANCH_NAME" in
             dev)
               VAR_FILE="envs/dev/dev.tfvars"
@@ -53,9 +51,7 @@ jobs:
           esac
 
           terraform workspace select "$WORKSPACE" || terraform workspace new "$WORKSPACE"
+          terraform plan -var-file="$VAR_FILE" -out=tfplan
 
-          terraform plan -var-file="$VAR_FILE"
-          # terraform apply -auto-approve
-
-      - name: Remove OCI key
+      - name: Clean up OCI key
         run: rm -f ./oci_api_key.pem

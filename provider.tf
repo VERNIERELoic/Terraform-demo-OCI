@@ -8,8 +8,8 @@ terraform {
   }
   backend "oci" {
     # Required
-    bucket            = "bucket-terraform"
-    namespace         = "axfyk0rflhbx"
+    bucket    = "bucket-terraform"
+    namespace = "axfyk0rflhbx"
   }
 }
 
